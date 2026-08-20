@@ -1,0 +1,128 @@
+terraform {
+  required_version = ">= 1.0"
+  required_providers {
+    kind = {
+      source  = "tehcyx/kind"
+      version = "~> 0.5.0"
+    }
+    helm = {
+      source  = "hashicorp/helm"
+      version = "~> 2.12.0"
+    }
+  }
+}
+
+# 1. Provision Kind Cluster
+resource "kind_cluster" "default" {
+  name           = "keycloak-local-cluster"
+  node_image     = "kindest/node:v1.29.2"
+  wait_for_ready = true
+
+  kind_config {
+    kind        = "Cluster"
+    api_version = "kind.x-k8s.io/v1alpha4"
+
+    node {
+      role = "control-plane"
+      kubeadm_config_patches = [
+        "kind: InitConfiguration\nnodeRegistration:\n  kubeletExtraArgs:\n    node-labels: \"ingress-ready=true\"\n"
+      ]
+
+      extra_port_mappings {
+        container_port = 80
+        host_port      = 80
+        protocol       = "TCP"
+      }
+    }
+  }
+}
+
+# Configure Helm Provider
+provider "helm" {
+  kubernetes = {
+    host                   = kind_cluster.default.endpoint
+    client_certificate     = kind_cluster.default.client_certificate
+    client_key             = kind_cluster.default.client_key
+    cluster_ca_certificate = kind_cluster.default.cluster_ca_certificate
+  }
+}
+
+# 2. Deploy PostgreSQL Database
+resource "helm_release" "postgresql" {
+  name             = "postgresql"
+  repository       = "https://charts.bitnami.com/bitnami"
+  chart            = "postgresql"
+  namespace        = "iam"
+  create_namespace = true
+
+  set = [
+    {
+      name  = "auth.postgresPassword"
+      value = "admin123"
+    },
+    {
+      name  = "auth.username"
+      value = "keycloak"
+    },
+    {
+      name  = "auth.password"
+      value = "keycloak123"
+    },
+    {
+      name  = "auth.database"
+      value = "keycloak"
+    }
+  ]
+
+  depends_on = [kind_cluster.default]
+}
+
+# 3. Deploy Multi-Pod Keycloak (2 Replicas)
+resource "helm_release" "keycloak" {
+  name             = "keycloak"
+  repository       = "https://charts.bitnami.com/bitnami"
+  chart            = "keycloak"
+  namespace        = "iam"
+  create_namespace = true
+
+  set = [
+    {
+      name  = "replicaCount"
+      value = "2"
+    },
+    {
+      name  = "auth.adminUser"
+      value = "admin"
+    },
+    {
+      name  = "auth.adminPassword"
+      value = "admin123"
+    },
+    {
+      name  = "postgresql.enabled"
+      value = "false"
+    },
+    {
+      name  = "externalDatabase.host"
+      value = "postgresql.iam.svc.cluster.local"
+    },
+    {
+      name  = "externalDatabase.port"
+      value = "5432"
+    },
+    {
+      name  = "externalDatabase.user"
+      value = "keycloak"
+    },
+    {
+      name  = "externalDatabase.password"
+      value = "keycloak123"
+    },
+    {
+      name  = "externalDatabase.database"
+      value = "keycloak"
+    }
+  ]
+
+  depends_on = [helm_release.postgresql]
+}

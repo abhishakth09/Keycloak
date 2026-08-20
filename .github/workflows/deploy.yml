@@ -1,0 +1,36 @@
+name: "Deploy Keycloak to Kubernetes"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: "Provision Cluster & Pods"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.0
+
+      - name: Create Kind Cluster in Runner
+        uses: helm/kind-action@v1.9.0
+        with:
+          cluster_name: keycloak-local-cluster
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+
+      - name: Verify Kubernetes Pods
+        run: |
+          kubectl get nodes
+          kubectl get pods -n iam
