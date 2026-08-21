@@ -19,10 +19,10 @@ jobs:
         with:
           terraform_version: 1.7.0
 
-      - name: Create Kind Cluster in Runner
+      - name: Setup Kind CLI
         uses: helm/kind-action@v1.9.0
         with:
-          cluster_name: keycloak-local-cluster
+          install_only: true
 
       - name: Terraform Init
         run: terraform init
