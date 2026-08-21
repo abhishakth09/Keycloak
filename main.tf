@@ -39,7 +39,7 @@ resource "kind_cluster" "default" {
 
 # Configure Helm Provider
 provider "helm" {
-  kubernetes = {
+  kubernetes {
     host                   = kind_cluster.default.endpoint
     client_certificate     = kind_cluster.default.client_certificate
     client_key             = kind_cluster.default.client_key
@@ -55,24 +55,25 @@ resource "helm_release" "postgresql" {
   namespace        = "iam"
   create_namespace = true
 
-  set = [
-    {
+  set {
       name  = "auth.postgresPassword"
       value = "admin123"
-    },
-    {
+    }
+
+  set {
       name  = "auth.username"
       value = "keycloak"
-    },
-    {
+    }
+
+  set {
       name  = "auth.password"
       value = "keycloak123"
-    },
-    {
+    }
+
+  set {
       name  = "auth.database"
       value = "keycloak"
     }
-  ]
 
   depends_on = [kind_cluster.default]
 }
@@ -85,44 +86,50 @@ resource "helm_release" "keycloak" {
   namespace        = "iam"
   create_namespace = true
 
-  set = [
-    {
+  set {
       name  = "replicaCount"
       value = "2"
-    },
-    {
+    }
+
+  set {
       name  = "auth.adminUser"
-      value = "admin"
-    },
-    {
+      value = "Admin"
+    }
+
+  set {
       name  = "auth.adminPassword"
-      value = "admin123"
-    },
-    {
+      value = "Admin123!"
+    }
+
+  set{
       name  = "postgresql.enabled"
       value = "false"
-    },
-    {
+    }
+
+  set{
       name  = "externalDatabase.host"
       value = "postgresql.iam.svc.cluster.local"
-    },
-    {
+    }
+
+  set {
       name  = "externalDatabase.port"
       value = "5432"
-    },
-    {
+    }
+
+  set {
       name  = "externalDatabase.user"
       value = "keycloak"
-    },
-    {
+    }
+
+  set {
       name  = "externalDatabase.password"
       value = "keycloak123"
-    },
-    {
+    }
+
+  set {
       name  = "externalDatabase.database"
       value = "keycloak"
     }
-  ]
 
   depends_on = [helm_release.postgresql]
 }
