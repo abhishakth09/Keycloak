@@ -55,7 +55,9 @@ resource "helm_release" "postgresql" {
   version          = "13.2.2"
   namespace        = "iam"
   create_namespace = true
-
+  timeout          = 600
+  wait             = false
+  
   set {
       name  = "auth.postgresPassword"
       value = "admin123"
@@ -87,6 +89,8 @@ resource "helm_release" "keycloak" {
   version          = "18.2.3"
   namespace        = "iam"
   create_namespace = true
+  timeout          = 600
+  wait             = false
 
   set {
       name  = "replicaCount"
