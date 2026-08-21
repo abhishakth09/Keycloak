@@ -33,4 +33,5 @@ jobs:
       - name: Verify Kubernetes Pods
         run: |
           kubectl get nodes
+          kubectl wait --namespace iam --for=condition=ready pod --all --timeout=300s || true
           kubectl get pods -n iam
