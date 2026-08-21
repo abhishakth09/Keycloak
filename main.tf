@@ -7,7 +7,7 @@ terraform {
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "~> 2.12.0"
+      version = "~> 2.15.0"
     }
   }
 }
@@ -52,6 +52,7 @@ resource "helm_release" "postgresql" {
   name             = "postgresql"
   repository       = "https://charts.bitnami.com/bitnami"
   chart            = "postgresql"
+  version          = "13.2.2"
   namespace        = "iam"
   create_namespace = true
 
@@ -83,6 +84,7 @@ resource "helm_release" "keycloak" {
   name             = "keycloak"
   repository       = "https://charts.bitnami.com/bitnami"
   chart            = "keycloak"
+  version          = "18.2.3"
   namespace        = "iam"
   create_namespace = true
 
