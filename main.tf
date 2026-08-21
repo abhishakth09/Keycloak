@@ -52,7 +52,7 @@ resource "helm_release" "postgresql" {
   name             = "postgresql"
   repository       = "https://charts.bitnami.com/bitnami"
   chart            = "postgresql"
-  version          = "13.2.2"
+  version          = "15.1.0"
   namespace        = "iam"
   create_namespace = true
   timeout          = 600
@@ -86,7 +86,7 @@ resource "helm_release" "keycloak" {
   name             = "keycloak"
   repository       = "https://charts.bitnami.com/bitnami"
   chart            = "keycloak"
-  version          = "18.2.3"
+  version          = "25.2.0"
   namespace        = "iam"
   create_namespace = true
   timeout          = 600
@@ -99,7 +99,7 @@ resource "helm_release" "keycloak" {
 
   set {
       name  = "auth.adminUser"
-      value = "Admin"
+      value = "admin"
     }
 
   set {
