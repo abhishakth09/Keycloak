@@ -57,6 +57,16 @@ resource "helm_release" "postgresql" {
   create_namespace = true
   timeout          = 600
   wait             = false
+
+  set {
+    name  = "image.registry"
+    value = "docker.io"
+  }
+
+  set {
+    name  = "image.repository"
+    value = "bitnami/postgresql"
+  }
   
   set {
       name  = "auth.postgresPassword"
@@ -91,6 +101,16 @@ resource "helm_release" "keycloak" {
   create_namespace = true
   timeout          = 600
   wait             = false
+
+  set {
+    name  = "image.registry"
+    value = "docker.io"
+  }
+
+  set {
+    name  = "image.repository"
+    value = "bitnami/keycloak"
+  }
 
   set {
       name  = "replicaCount"
