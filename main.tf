@@ -60,33 +60,33 @@ resource "helm_release" "postgresql" {
 
   set {
     name  = "image.registry"
-    value = "docker.io"
+    value = "ghcr.io"
   }
 
   set {
     name  = "image.repository"
     value = "bitnami/postgresql"
   }
-  
-  set {
-      name  = "auth.postgresPassword"
-      value = "admin123"
-    }
 
   set {
-      name  = "auth.username"
-      value = "keycloak"
-    }
+    name  = "auth.postgresPassword"
+    value = "admin123"
+  }
 
   set {
-      name  = "auth.password"
-      value = "keycloak123"
-    }
+    name  = "auth.username"
+    value = "keycloak"
+  }
 
   set {
-      name  = "auth.database"
-      value = "keycloak"
-    }
+    name  = "auth.password"
+    value = "keycloak123"
+  }
+
+  set {
+    name  = "auth.database"
+    value = "keycloak"
+  }
 
   depends_on = [kind_cluster.default]
 }
@@ -104,7 +104,7 @@ resource "helm_release" "keycloak" {
 
   set {
     name  = "image.registry"
-    value = "docker.io"
+    value = "ghcr.io"
   }
 
   set {
@@ -113,49 +113,59 @@ resource "helm_release" "keycloak" {
   }
 
   set {
-      name  = "replicaCount"
-      value = "2"
-    }
+    name  = "http.enabled"
+    value = "true"
+  }
 
   set {
-      name  = "auth.adminUser"
-      value = "admin"
-    }
+    name  = "production"
+    value = "false"
+  }
 
   set {
-      name  = "auth.adminPassword"
-      value = "Admin123!"
-    }
-
-  set{
-      name  = "postgresql.enabled"
-      value = "false"
-    }
-
-  set{
-      name  = "externalDatabase.host"
-      value = "postgresql.iam.svc.cluster.local"
-    }
+    name  = "replicaCount"
+    value = "2"
+  }
 
   set {
-      name  = "externalDatabase.port"
-      value = "5432"
-    }
+    name  = "auth.adminUser"
+    value = "admin"
+  }
 
   set {
-      name  = "externalDatabase.user"
-      value = "keycloak"
-    }
+    name  = "auth.adminPassword"
+    value = "Admin123!"
+  }
 
   set {
-      name  = "externalDatabase.password"
-      value = "keycloak123"
-    }
+    name  = "postgresql.enabled"
+    value = "false"
+  }
 
   set {
-      name  = "externalDatabase.database"
-      value = "keycloak"
-    }
+    name  = "externalDatabase.host"
+    value = "postgresql.iam.svc.cluster.local"
+  }
+
+  set {
+    name  = "externalDatabase.port"
+    value = "5432"
+  }
+
+  set {
+    name  = "externalDatabase.user"
+    value = "keycloak"
+  }
+
+  set {
+    name  = "externalDatabase.password"
+    value = "keycloak123"
+  }
+
+  set {
+    name  = "externalDatabase.database"
+    value = "keycloak"
+  }
 
   depends_on = [helm_release.postgresql]
 }
