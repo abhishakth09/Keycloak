@@ -50,7 +50,7 @@ provider "helm" {
 # 2. Deploy PostgreSQL Database
 resource "helm_release" "postgresql" {
   name             = "postgresql"
-  repository       = "https://charts.bitnami.com/bitnami"
+  repository       = "oci://registry-1.docker.io/bitnamicharts"
   chart            = "postgresql"
   version          = "15.1.0"
   namespace        = "iam"
@@ -84,7 +84,7 @@ resource "helm_release" "postgresql" {
 # 3. Deploy Multi-Pod Keycloak (2 Replicas)
 resource "helm_release" "keycloak" {
   name             = "keycloak"
-  repository       = "https://charts.bitnami.com/bitnami"
+  repository       = "oci://registry-1.docker.io/bitnamicharts"
   chart            = "keycloak"
   version          = "25.2.0"
   namespace        = "iam"
