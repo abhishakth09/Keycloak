@@ -58,6 +58,12 @@ resource "helm_release" "postgresql" {
   timeout          = 600
   wait             = false
 
+  # Bypass Bitnami custom registry verification
+  set {
+    name  = "global.security.allowInsecureImages"
+    value = "true"
+  }
+
   set {
     name  = "image.registry"
     value = "ghcr.io"
@@ -101,6 +107,12 @@ resource "helm_release" "keycloak" {
   create_namespace = true
   timeout          = 600
   wait             = false
+
+  # Bypass Bitnami custom registry verification
+  set {
+    name  = "global.security.allowInsecureImages"
+    value = "true"
+  }
 
   set {
     name  = "image.registry"
