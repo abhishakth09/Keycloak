@@ -66,12 +66,12 @@ resource "helm_release" "postgresql" {
 
   set {
     name  = "image.registry"
-    value = "ghcr.io"
+    value = "docker.io"
   }
 
   set {
     name  = "image.repository"
-    value = "bitnami/postgresql"
+    value = "bitnamilegacy/postgresql"
   }
 
   set {
@@ -116,12 +116,12 @@ resource "helm_release" "keycloak" {
 
   set {
     name  = "image.registry"
-    value = "ghcr.io"
+    value = "docker.io"
   }
 
   set {
     name  = "image.repository"
-    value = "bitnami/keycloak"
+    value = "bitnamilegacy/keycloak"
   }
 
   set {
