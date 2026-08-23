@@ -179,5 +179,15 @@ resource "helm_release" "keycloak" {
     value = "keycloak"
   }
 
+  set {
+  name  = "resources.limits.memory"
+  value = "1536Mi"
+}
+
+  set {
+  name  = "resources.requests.memory"
+  value = "768Mi"
+}
+
   depends_on = [helm_release.postgresql]
 }
